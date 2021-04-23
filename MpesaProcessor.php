@@ -62,12 +62,12 @@ function lipaNaMpesaPassword()
             'Password' => lipaNaMpesaPassword(),
             'Timestamp' => Carbon::rawParse('now')->format('YmdHms'),
             'TransactionType' => 'CustomerPayBillOnline',
-            'Amount' => $amount,
+            'Amount' => 5,
             'PartyA' => "254714103036",
             'PartyB' => 174379,
             'PhoneNumber' => "254714103036",
             'CallBackURL' => ' https://qoolmax.com /callback',
-            'AccountReference' => "Simon's Tech School Payment",
+            'AccountReference' => "Code_With_Fredrick",
             'TransactionDesc' => "lipa Na M-PESA"
         ];
 
