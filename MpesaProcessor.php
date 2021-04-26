@@ -22,19 +22,24 @@ function lipaNaMpesaPassword()
 
    function newAccessToken()
    {
-       $consumer_key="2sh2YA1fTzQwrZJthIrwLMoiOi3nhhal";
-       $consumer_secret="CKaCnw224K4Lc56w";
+       $consumer_key="NJxRBX33DCZMFGqsiqsZOnupWPsj5FRh";
+       $consumer_secret="9AqXGufXcq0cGwhs";
        $credentials = base64_encode($consumer_key.":".$consumer_secret);
        $url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
 
 
        $curl = curl_init();
        curl_setopt($curl, CURLOPT_URL, $url);
-       curl_setopt($curl, CURLOPT_HTTPHEADER, array("Authorization: Basic ".$credentials,"Content-Type:application/json"));
+       curl_setopt($curl, CURLOPT_HTTPHEADER,
+        array("Authorization: Basic ".$credentials,
+         // "Content-Type:application/json"
+        )
+      );
        curl_setopt($curl, CURLOPT_HEADER, false);
        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
        $curl_response = curl_exec($curl);
+       var_dump($curl_response);
        $access_token=json_decode($curl_response);
        curl_close($curl);
        
@@ -56,20 +61,22 @@ function lipaNaMpesaPassword()
        
 
 
-       $url = 'https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query';
+       $url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';//for some reason it says this url is incorrect. it actually is correct
        $curl_post_data = [
             'BusinessShortCode' =>174379,
             'Password' => lipaNaMpesaPassword(),
             'Timestamp' => Carbon::rawParse('now')->format('YmdHms'),
             'TransactionType' => 'CustomerPayBillOnline',
-            'Amount' => 5,
+            'Amount' => $amount,
             'PartyA' => "254714103036",
             'PartyB' => 174379,
             'PhoneNumber' => "254714103036",
-            'CallBackURL' => ' https://qoolmax.com /callback',
-            'AccountReference' => "Code_With_Fredrick",
+            'CallBackURL' =>  'https://qoolmax.com/callback',
+            'AccountReference' => "Fred tech Payment",
             'TransactionDesc' => "lipa Na M-PESA"
         ];
+
+        var_dump($url,$curl_post_data);
 
 
        $data_string = json_encode($curl_post_data);
@@ -77,10 +84,15 @@ function lipaNaMpesaPassword()
 
        $curl = curl_init();
        curl_setopt($curl, CURLOPT_URL, $url);
-       curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json','Authorization:Bearer '.newAccessToken()));
+       curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+        'Content-Type:application/json',
+        'Authorization:Bearer '.newAccessToken()));
        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+       curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
        curl_setopt($curl, CURLOPT_POST, true);
+       curl_setopt($curl, CURLOPT_FAILONERROR, true);
        curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
        $curl_response = curl_exec($curl);
-       print_r($curl_response);
+       var_dump($curl_response);
+       var_dump(curl_error($curl));
    }
